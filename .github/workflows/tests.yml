@@ -2,9 +2,9 @@ name: Laravel Tests
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "master" ]
 
 jobs:
   laravel-tests:
@@ -34,19 +34,19 @@ jobs:
       - run: echo "vm.overcommit_memory = 1" | sudo tee /etc/sysctl.d/nextcloud-aio-memory-overcommit.conf
       - name: Copy .env
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
-        
+
       - name: Install Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress
-        
+
       - name: Generate key
         run: php artisan key:generate
-        
+
       - name: Generate JET secret
         run: php artisan jwt:secret
-        
+
       - name: Directory Permissions
         run: chmod -R 777 storage bootstrap/cache
-        
+
       - name: Create Database
         run: php artisan migrate --seed --force
         env:
@@ -54,7 +54,7 @@ jobs:
           DB_DATABASE: mysql_testing
           DB_PORT: 3306
           DB_USER: root
-        
+
       - name: Print DB_HOST env
         run: printenv DB_HOST
       - name: Execute tests (Unit and Feature tests) via PHPUnit
@@ -66,4 +66,4 @@ jobs:
           DB_DATABASE: mysql_testing
           DB_PORT: 3306
           DB_USER: root
-        
+
