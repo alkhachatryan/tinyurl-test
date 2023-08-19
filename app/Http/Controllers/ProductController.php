@@ -36,7 +36,9 @@ class ProductController extends Controller
     {
         $product = $this->productService->showProduct($request->input('product_id'));
 
-        AddProductToLastViewedProductsColumn::dispatch($request->user()->id, $product->id, $request->user()->last_viewed_products);
+        if(! is_null($request->user())) {
+            AddProductToLastViewedProductsColumn::dispatch($request->user()->id, $product->id, $request->user()->last_viewed_products);
+        }
 
         return $product;
     }

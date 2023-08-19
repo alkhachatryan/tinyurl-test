@@ -24,12 +24,7 @@ class ProductService
             $query = $query->orderBy($sortBy, $sortOrder);
         }
 
-//        var_dump($query->limit(100)->offset(10000)->get());die;
-
-//        var_dump( $query->orderBy('is_top', 'DESC')->toSql());die;
-
         return $query->orderBy('is_top', 'DESC')->simplePaginate($limit);
-//        return $query->simplePaginate($limit);
     }
 
     public function showProduct(int $productId): Builder|array|Collection|Model

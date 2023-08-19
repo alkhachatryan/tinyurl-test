@@ -20,16 +20,17 @@ Route::group(['prefix' => 'auth', 'as' => 'auth.', 'controller' => AuthControlle
     });
 });
 
-// TODO: get VIEW actions out from AUTH middleware
-Route::group(['middleware' => 'auth:api'], function () {
-    Route::group(['prefix' => 'categories'], function () {
-        Route::get('/', [CategoriesController::class, 'index']);
-        Route::post('/', [CategoriesController::class, 'create']);
-    });
 
-    Route::group(['prefix' => 'products'], function () {
-        Route::get('/', [ProductController::class, 'index']);
-        Route::get('/{productId}', [ProductController::class, 'show'])->where('productId', '[0-9]+');
+Route::group(['prefix' => 'categories'], function () {
+    Route::get('/', [CategoriesController::class, 'index']);
+    Route::post('/', [CategoriesController::class, 'create'])->middleware('auth:api');
+});
+
+Route::group(['prefix' => 'products'], function () {
+    Route::get('/', [ProductController::class, 'index']);
+    Route::get('/{productId}', [ProductController::class, 'show'])->where('productId', '[0-9]+');
+
+    Route::group(['middleware' => 'auth:api'], function () {
         Route::post('/', [ProductController::class, 'create']);
         Route::put('/{productId}', [ProductController::class, 'update'])->where('productId', '[0-9]+');
         Route::patch('/{productId}/delete', [ProductController::class, 'delete'])->where('productId', '[0-9]+');

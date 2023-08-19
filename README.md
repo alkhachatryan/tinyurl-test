@@ -1,25 +1,45 @@
-# Technical assignment back-end engineer
+# Installation
+1. git clone git@github.com:alkhachatryan/tinyurl-test.git
+2. cd tinyurl-test
+3. sudo make start
+4. sudo make connect_app 
 
-As part of an engineering team, you are working on an online shopping platform. The sales team wants to know which items were added to a basket, but removed before checkout. They will use this data later for targeted discounts.
+In the app container run the following commands:
+1. composer install
+2. php artisan key:generate
+3. php artisan jwt:secret
+4. php artisan migrate --seed # WARNING: 100.000.000 records will be created
+5. php artisan queue:work
 
-Using the agreed upon programming language, build a solution that solves the above problem.
+The API is accessible at: http://localhost:8000
 
-**Scope**
+# Notes
+1. I used MySQL for storing and indexing DB, as you use MySQL.
+2. Used indexes on product_categories and products tables. So GET /products endpoint takes ~200ms.
+3. Used Redis for queueable jobs and there is one job \App\Jobs\AddProductToLastViewedProductsColumn for updating logged in users last viewed products.
+4. There is auth flow, so users can login, register, logout, GET Me, forgot and reset passwords and verify an email.
+5. POST, PUT, PATCH requests are under auth:api middleware, so user should be logged in for accessing that endpoints.
+6. Assuming categories will be not be as much as products so I used all() method in my services for getting categories.
+7. Used GlobalScope (with an index) for filtering deleted products. There is only one endpoint which can be called for deleted products - restore endpoint.
+8. Included Postman Collection for easy testing my job.
+9. I created a command for myself for checking the DB total size during seeding and indexing. Decided to leave it here.
+10. Used DI services for users, tokens, products and categories resources.
+11. The project is dockerized with docker-compose and makefile.
 
-* Focus on the JSON API, not on the look and feel of the application.
+# Report for endpoints speed
+These are the timing for most heavy queries. Tested with me PC with the following params:
+1. RAM - 24GB
+2. CPU - i5 9th gen
+3. GPU - GeForce GTX 1650
+4. OS Ubuntu - 22.04
+5. Linux Kernel - 6.2.0-26-generic
 
-**Timing**
+And the timing is:
+1. List all products (paginated ofc) with sorting (is_top with/without price&name) takes about 200ms
+2. Getting single product with PK takes about 120ms
+3. New product creation takes about 190ms
+4. About 200ms takes product updating (also deleting and updating)
+5. Category creation and updating take less than 100ms
 
-You have one week to accomplish the assignment. You decide yourself how much time and effort you invest in it, but one of our colleagues tends to say: "Make sure it is good" ;-). Please send us an email (jobs@madewithlove.com) when you think the assignment is ready for review. Please mention your name, Github username, and a link to what we need to review.
-
-
-**Notes From Developer**
-- There is no client-side, only RestAPI, but added Postman collection.
-- Assuming there is already items administration service (didn't handle that part, for example moderating users or items)
-- There is a resource called **cart** which only contains a user_id and **cart_item** which is related to the **cart**. Actually I could store user_id in **cart_item** resource, but decided to have **cart** resource because each cart can have coupons, promo-code and other specific attributes.
-- Didn't implement cart attributes such as: qty, properties(color, size, etc) as they're not needed for the current task
-- **cart_item** and **removed_item** are very similar resources, but keeping them as separated resources, as mapping resource **cart_item** may have different attributes and there can be differences, so in **cart_item** cart_id + item_id is a unique key and user cannot have the same resource added in the cart multiple times, instead he'll add qty of that resource. Meanwhile user can add the item to the cart and remove it and do that operation multiple times. That information can be useful for marketing team.
-- As user can have only one cart, and it cannot be deleted - there is a listener for Registered event to create a cart when user registered
-- There could be **order** resource and added to **removed_item** resource to track which item was removed from which order(cart of the order), but as there is no requirement to the exact orders I didn't handle that
-- **removed_item** has **is_draft** column, which indicates if the cart at this point is checked out or not. If there are X number of records with is_draft=true, that means user added that products, then removed, BUT didn't check out yet. If there are Y number of records where is_draft=false, that means user added that items to the cart, then removed, then checked out. These data can be used for analytics and metrics in the future. 
-- Created tests for auth and cart flows. Set up github actions
+### Important note
+During indexing the MySQL engine was taking about 200GB from my SSD, then removing it. Looks like it was buffering existing data before creating an index and then removing useless data. Currently DB takes about 50GB in my storage (data + indexes)
