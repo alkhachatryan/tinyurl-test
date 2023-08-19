@@ -14,7 +14,7 @@ In the app container run the following commands:
 The API is accessible at: http://localhost:8000
 
 # Notes
-1. I used MySQL for storing and indexing DB, as you use MySQL.
+1. I used MySQL for storing and indexing DB, since you use MySQL.
 2. Used indexes on product_categories and products tables. So GET /products endpoint takes ~200ms.
 3. Used Redis for queueable jobs and there is one job \App\Jobs\AddProductToLastViewedProductsColumn for updating logged in users last viewed products.
 4. There is auth flow, so users can login, register, logout, GET Me, forgot and reset passwords and verify an email.
