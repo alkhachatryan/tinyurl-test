@@ -1,0 +1,48 @@
+version: "3"
+services:
+    app:
+        container_name: tiny_app
+        build:
+            context: .
+            dockerfile: Dockerfile
+            args:
+                user: tinyurl
+                uid: 1000
+        volumes:
+            - .:/var/www
+        depends_on:
+            - mysql
+            - redis
+            - nginx
+
+    mysql:
+        container_name: tiny_mysql
+        image: mysql
+        environment:
+            MYSQL_DATABASE: app
+            MYSQL_ROOT_PASSWORD: password
+        volumes:
+            - local_mysqldata:/var/lib/mysql
+        ports:
+            - "3306:3306"
+        expose:
+            - '3306'
+
+    redis:
+        container_name: tiny_redis
+        image: redis
+        command: redis-server --requirepass root
+        ports:
+            - 6379:6379
+
+    nginx:
+        container_name: tiny_nginx
+        image: nginx
+        volumes:
+            - ./nginx.conf:/etc/nginx/conf.d/default.conf
+        ports:
+            - 8000:80
+
+volumes:
+    local_mysqldata:
+

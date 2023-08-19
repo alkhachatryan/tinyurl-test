@@ -1,0 +1,48 @@
+version: "3"
+services:
+  app_testing:
+    container_name: tiny_app_testing
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        user: tinyurl
+        uid: 1000
+    volumes:
+      - .:/var/www
+    depends_on:
+      - mysql_testing
+      - redis_testing
+      - nginx_testing
+
+  mysql_testing:
+    container_name: tiny_mysql_testing
+    image: mysql
+    environment:
+      MYSQL_DATABASE: app
+      MYSQL_ROOT_PASSWORD: password
+    volumes:
+      - local_mysqldata:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    expose:
+      - '3306'
+
+  redis_testing:
+    container_name: tiny_redis_testing
+    image: redis
+    command: redis-server --requirepass root
+    ports:
+      - 6379:6379
+
+  nginx_testing:
+    container_name: tiny_nginx_testing
+    image: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - 8000:80
+
+volumes:
+  local_mysqldata:
+
