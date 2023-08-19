@@ -27,7 +27,7 @@ The API is accessible at: http://localhost:8000
 11. The project is dockerized with docker-compose and makefile.
 
 # Report for endpoints speed
-These are the timing for most heavy queries. Tested with me PC with the following params:
+These are the timing for most heavy queries. Tested with my PC with the following params:
 1. RAM - 24GB
 2. CPU - i5 9th gen
 3. GPU - GeForce GTX 1650
