@@ -34,8 +34,19 @@ class ProductController extends Controller
 
     public function delete(int $productId): JsonResponse
     {
-        $this->productService->delete($productId);
+        /** @var Product $product */
+        $product = Product::with('categories')->find($productId);
+        $this->productService->delete($product);
 
-        return responseJson(null, Response::HTTP_NO_CONTENT);
+        return responseJson($product);
+    }
+
+    public function restore(int $productId): JsonResponse
+    {
+        /** @var Product $product */
+        $product = Product::with('categories')->find($productId);
+        $this->productService->restore($product);
+
+        return responseJson($product);
     }
 }

@@ -31,6 +31,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('/', [ProductController::class, 'index']);
         Route::post('/', [ProductController::class, 'create']);
         Route::put('/{productId}', [ProductController::class, 'update'])->where('productId', '[0-9]+');
-        Route::delete('/{productId}', [ProductController::class, 'delete'])->where('productId', '[0-9]+');
+        Route::patch('/{productId}/delete', [ProductController::class, 'delete'])->where('productId', '[0-9]+');
+        Route::patch('/{productId}/restore', [ProductController::class, 'restore'])->where('productId', '[0-9]+');
     });
 });

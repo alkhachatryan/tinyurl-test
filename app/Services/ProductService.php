@@ -75,10 +75,19 @@ class ProductService
         ProductCategory::insert($newMapping);
     }
 
-    public function delete(Product|int $product): void
+    public function delete(Product $product): Product
     {
-        $productId = $product instanceof Product? $product->id : $product;
-        ProductCategory::whereProductId($productId)->delete();
-        Product::whereId($productId)->delete();
+        $product->is_deleted = true;
+        $product->save();
+
+        return $product;
+    }
+
+    public function restore(Product $product): Product
+    {
+        $product->is_deleted = false;
+        $product->save();
+
+        return $product;
     }
 }
