@@ -15,7 +15,7 @@ class ListProductsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'sort_by' => ['required_with:sort_order', 'in:name,description,price'],
+            'sort_by' => ['required_with:sort_order', 'in:name,price'],
             'sort_order' => ['required_with:sort_by', 'in:asc,desc'],
             'limit' => ['integer', 'min:0']
         ];

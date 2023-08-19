@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\ProductCategory;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -15,15 +16,20 @@ use Illuminate\Support\Facades\DB;
 
 class ProductService
 {
-    public function listProducts(int $limit = 100, string $sortBy = null, string $sortOrder = null): LengthAwarePaginator
+    public function listProducts(int $limit = 100, string $sortBy = null, string $sortOrder = null): Paginator
     {
-        $query = Product::query();
+        $query = Product::query()->with('categories');
 
         if(! is_null($sortBy)) {
             $query = $query->orderBy($sortBy, $sortOrder);
         }
 
-        return $query->orderBy('is_top', 'DESC')->paginate($limit);
+//        var_dump($query->limit(100)->offset(10000)->get());die;
+
+//        var_dump( $query->orderBy('is_top', 'DESC')->toSql());die;
+
+        return $query->orderBy('is_top', 'DESC')->simplePaginate($limit);
+//        return $query->simplePaginate($limit);
     }
 
     public function showProduct(int $productId): Builder|array|Collection|Model
