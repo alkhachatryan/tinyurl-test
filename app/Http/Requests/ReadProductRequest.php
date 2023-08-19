@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class ReadProductRequest extends FormRequest
 {
@@ -23,5 +25,16 @@ class ReadProductRequest extends FormRequest
         $this->merge([
             'product_id' => $this->route('productId')
         ]);
+    }
+
+    /**
+     * Customizing the failed validation error to show 404 instead of 422.
+    */
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'error' => 'Not found',
+            'data' => $validator->errors(),
+        ], 404));
     }
 }

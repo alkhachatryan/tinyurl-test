@@ -23,6 +23,7 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
         'name',
         'email',
         'password',
+        'last_viewed_products',
     ];
 
     /**
@@ -43,6 +44,11 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'last_viewed_products' => 'array'
+    ];
+
+    protected $attributes = [
+        'last_viewed_products' => '[]'
     ];
 
     public function getJWTIdentifier()

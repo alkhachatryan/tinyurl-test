@@ -7,7 +7,9 @@ use App\Models\Product;
 use App\Models\ProductCategory;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -22,6 +24,11 @@ class ProductService
         }
 
         return $query->orderBy('is_top', 'DESC')->paginate($limit);
+    }
+
+    public function showProduct(int $productId): Builder|array|Collection|Model
+    {
+        return Product::with('categories')->find($productId);
     }
 
     public function create(array $data, array $categoriesId): Product

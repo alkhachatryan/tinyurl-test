@@ -8,6 +8,7 @@ use App\Http\Requests\ListProductsRequest;
 use App\Http\Requests\ReadProductRequest;
 use App\Http\Requests\RestoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Jobs\AddProductToLastViewedProductsColumn;
 use App\Models\Product;
 use App\Models\Scopes\DeletedProduct;
 use App\Services\ProductService;
@@ -31,9 +32,13 @@ class ProductController extends Controller
         return responseJson($paginatorData);
     }
 
-    public function read(ReadProductRequest $request): Builder|array|Collection|Model
+    public function show(ReadProductRequest $request): Builder|array|Collection|Model
     {
-        return Product::with('categories')->find($request->input('product_id'));
+        $product = $this->productService->showProduct($request->input('product_id'));
+
+        AddProductToLastViewedProductsColumn::dispatch($request->user()->id, $product->id, $request->user()->last_viewed_products);
+
+        return $product;
     }
 
     public function create(CreateProductRequest $request): JsonResponse

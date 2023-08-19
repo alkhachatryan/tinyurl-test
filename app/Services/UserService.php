@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\TokenTypeEnum;
+use App\Models\Product;
 use App\Models\Token;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -41,5 +42,26 @@ class UserService
         $user->fill($payload);
         $user->save();
         return $user;
+    }
+
+    public function addProductToUserLastViewedProducts(int $userId, int $productId, array $userLastViewedProducts): void
+    {
+        if(in_array($productId, $userLastViewedProducts)) {
+            // Remove the existing ID from the list to append later (typically it'll be a moving to the end of the list)
+            unset($userLastViewedProducts[array_search($productId, $userLastViewedProducts)]);
+        }
+        else {
+            // Remove the oldest product if the array has more than 10 items
+            if (count($userLastViewedProducts) === 10) {
+                array_shift($userLastViewedProducts);
+            }
+        }
+
+        // Add the new product to the end of the array
+        $userLastViewedProducts[] = $productId;
+
+        User::whereId($userId)->update([
+            'last_viewed_products' => array_values($userLastViewedProducts)
+        ]);
     }
 }
