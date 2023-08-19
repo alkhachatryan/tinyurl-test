@@ -6,11 +6,24 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use Exception;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ProductService
 {
+    public function listProducts(int $limit = 100, string $sortBy = null, string $sortOrder = null): LengthAwarePaginator
+    {
+        $query = Product::query();
+
+        if(! is_null($sortBy)) {
+            $query = $query->orderBy($sortBy, $sortOrder);
+        }
+
+        return $query->orderBy('is_top', 'DESC')->paginate($limit);
+    }
+
     public function create(array $data, array $categoriesId): Product
     {
         $product = Product::create($data);

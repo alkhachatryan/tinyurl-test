@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateProductRequest extends CreateProductRequest
+class ReadProductRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -13,10 +13,9 @@ class UpdateProductRequest extends CreateProductRequest
      */
     public function rules(): array
     {
-        return array_merge(parent::rules(), [
-            'product_id' => ['required', 'integer', 'exists:products,id,is_deleted,false'],
-            'is_top' => ['boolean']
-        ]);
+        return [
+            'product_id' => ['required', 'int', 'exists:products,id,is_deleted,false']
+        ];
     }
 
     protected function prepareForValidation()

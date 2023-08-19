@@ -29,6 +29,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::group(['prefix' => 'products'], function () {
         Route::get('/', [ProductController::class, 'index']);
+        Route::get('/{productId}', [ProductController::class, 'read'])->where('productId', '[0-9]+');
         Route::post('/', [ProductController::class, 'create']);
         Route::put('/{productId}', [ProductController::class, 'update'])->where('productId', '[0-9]+');
         Route::patch('/{productId}/delete', [ProductController::class, 'delete'])->where('productId', '[0-9]+');
