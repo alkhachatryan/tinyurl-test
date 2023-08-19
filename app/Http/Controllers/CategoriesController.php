@@ -7,6 +7,7 @@ use App\Services\CategoryService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class CategoriesController extends Controller
 {
@@ -24,6 +25,6 @@ class CategoriesController extends Controller
     {
         $category = $this->categoryService->create($request->only('name'));
 
-        return responseJson($category);
+        return responseJson($category, Response::HTTP_CREATED);
     }
 }

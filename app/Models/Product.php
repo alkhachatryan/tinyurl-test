@@ -6,23 +6,27 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
-class Category extends Model
+class Product extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'name',
+        'description',
+        'price',
+        'is_deleted',
+        'is_top',
     ];
 
-    public function products(): HasManyThrough
+    public function categories(): HasManyThrough
     {
         return $this->hasManyThrough(
-            Product::class,
+            Category::class,
             ProductCategory::class,
-            'category_id',
+            'product_id',
             'id',
             'id',
-            'product_id'
+            'category_id'
         );
     }
 }
