@@ -43,3 +43,12 @@ And the timing is:
 
 ### Important note
 During indexing the MySQL engine was taking about 200GB from my SSD, then removing it. Looks like it was buffering existing data before creating an index and then removing useless data. Currently DB takes about 50GB in my storage (data + indexes)
+
+
+### Updated 21.08.2023
+Decided to remove the whole DB volume from my storage with:
+``` sudo docker volume rm tinyurl_local_mysqldata ```
+It shows the error that the volume is in use. Then I used the slutions from:
+https://stackoverflow.com/questions/34658836/docker-is-in-volume-in-use-but-there-arent-any-docker-containers
+
+Clear the disk after seeding a DB (if you seeded 100.000.000), because it takes more than 50GB
